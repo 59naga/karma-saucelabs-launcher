@@ -37,10 +37,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/59naga/karma-saucelabs-launcer.git"
+    "url": "git+https://github.com/59naga/karma-saucelabs-launcher.git"
   },
   "bugs": {
-    "url": "https://github.com/59naga/karma-saucelabs-launcer/issues"
+    "url": "https://github.com/59naga/karma-saucelabs-launcher/issues"
   },
-  "homepage": "https://github.com/59naga/karma-saucelabs-launcer#readme"
+  "homepage": "https://github.com/59naga/karma-saucelabs-launcher#readme"
 }
