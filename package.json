@@ -1,0 +1,46 @@
+{
+  "name": "karma-saucelabs-launcher",
+  "version": "0.0.0-alpha",
+  "description": "Launch any browser on SauceLabs at concurrency",
+  
+  "scripts": {
+    "posttest": "coffee --output node_modules/karma-saucelabs-launcher --bare --compile src",
+    "test": "npm run karma && echo pending || echo pending",
+
+    "prepublish": "node -e \"if(process.env.TRAVIS){}else{process.exit(1)}\" && npm run compile || echo skip prepublish",
+    "compile": "coffee --bare --compile index.coffee",
+    "postcompile": "coffee --output lib --bare --compile src"
+  },
+
+  "dependencies": {
+    "bluebird": "^2.9.27",
+    "sauce-connect-launcher": "^0.11.1",
+    "saucelabs": "^0.1.1",
+    "saucelabs-finder": "0.0.0-alpha",
+    "wd": "^0.3.12",
+    "yamljs": "^0.2.3"
+  },
+  "devDependencies": {
+    "jasminetea": "^0.2.1-alpha.2",
+    "karma": "^0.12.36",
+    "karma-mocha": "^0.1.10",
+    "mocha": "^2.2.5"
+  },
+
+  "keywords": [
+    "karma",
+    "saucelabs",
+    "cloud-test",
+    "zuul"
+  ],
+  "author": "59naga <i59naga@icloud.com> (http://berabou.me)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/59naga/karma-saucelabs-launcer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/59naga/karma-saucelabs-launcer/issues"
+  },
+  "homepage": "https://github.com/59naga/karma-saucelabs-launcer#readme"
+}

@@ -1,0 +1,19 @@
+description:
+  - this is made in referenced to zuul.
+  - 'https://github.com/defunctzombie/zuul/wiki/zuul.yml'
+
+browsers:
+  - name: chrome
+    version: oldest,dev,beta
+  - name: ie
+    version: [oldest]
+  - name: firefox
+    version: 25..latest
+  - name: safari
+    version: 5..latest
+  - name: iphone
+    version: [7.1,latest]
+  - name: ipad
+    version: oldest
+  - name: android
+    version: ..latest
