@@ -1,8 +1,3 @@
 {
-  "name": "karma-saucelabs-launcher-test",
-  "dependencies": {
-    "karma": "^0.12.36",
-    "karma-mocha": "^0.1.10",
-    "mocha": "^2.2.5"
-  }
+  "name": "karma-saucelabs-launcher"
 }

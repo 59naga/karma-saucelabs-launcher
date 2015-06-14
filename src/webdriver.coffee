@@ -77,7 +77,7 @@ class Webdriver
       driver.title().then null,(error)=>
         @log.error error if @log
         @complete id
-    ,30000
+    ,60000
 
     # Share to sessions of Reporter's DI
     @sessions[id].driver= driver
