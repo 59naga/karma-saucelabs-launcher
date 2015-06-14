@@ -4,7 +4,7 @@
   "description": "Launch any browser on SauceLabs at concurrency",
   
   "scripts": {
-    "posttest": "coffee --output node_modules/karma-saucelabs-launcher --bare --compile src",
+    "pretest": "coffee --output node_modules/karma-saucelabs-launcher --bare --compile src",
     "test": "cd test && karma start && echo pending || echo pending",
 
     "prepublish": "node -e \"if(process.env.TRAVIS){}else{process.exit(1)}\" && npm run compile || echo skip prepublish",

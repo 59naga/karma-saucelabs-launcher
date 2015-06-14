@@ -2,11 +2,11 @@ module.exports= function(config) {
   config.set({
     browsers: ['Sauce'],
     reporters: ['sauce'],
-    autoWatch: false,
     singleRun: true,
     
-    logLevel: 'INFO',
+    logLevel: 'DEBUG',
 
+    autoWatch: false,
     basePath: '',
     frameworks: ['mocha'],
     files: [

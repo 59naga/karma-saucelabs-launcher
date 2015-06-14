@@ -6,7 +6,7 @@ browsers:
   - name: chrome
     version: oldest,dev,beta
   - name: ie
-    version: [oldest]
+    version: [latest]
   - name: firefox
     version: 25..latest
   - name: safari

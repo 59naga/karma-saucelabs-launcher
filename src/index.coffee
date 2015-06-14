@@ -33,7 +33,7 @@ class Launcher
 
     # Override environment/configs
     emitter.setMaxListeners(0)
-    # config.browserNoActivityTimeout= 0
+    config.browserNoActivityTimeout= 0
 
     # Setup launcher
     @name= 'SauceLauncher'

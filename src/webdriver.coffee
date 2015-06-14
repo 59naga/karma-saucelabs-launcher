@@ -15,7 +15,7 @@ class Webdriver
     @username= options.username
     @accessKey= options.accessKey
 
-    # sessions= sessions[...3]
+    # @sessions= @sessions[...4]
     @begin= Date.now()    
     @current= 0
 
@@ -42,7 +42,7 @@ class Webdriver
     @log.info 'Queuing %s@%s at %s',long_name,short_version,os
 
   boot: (id)=>
-    @log.debug 'Progress %s/%s ... Concurrency %s/%s',@current,@sessions.length,@active,@concurrency
+    @log.debug 'Progress %s/%s Concurrency %s/%s (%s)',@current,@sessions.length,@active,@concurrency,(@current is @sessions.length and @active is 0)
 
     browser= @sessions[id]
     return @queue browser if @active >= @concurrency
@@ -106,7 +106,8 @@ class Webdriver
 
   complete: (id)->
     session= @sessions[id]
-    return unless session?.driver
+
+    return @log.error 'Can not complete invalid session' unless session?.driver
 
     @active--
     {driver,lastResult,long_name,short_version,os}= session
@@ -124,17 +125,20 @@ class Webdriver
       @failed++
       @log.error 'Failed %s@%s at %s (passed %s/ failed %s/ total %s)', long_name, short_version, os, lastResult.success|0, lastResult.failed|0, lastResult.total|0
 
+    @log.debug 'Shutting down %s@%s at %s',long_name, short_version, os, id
+
+    # https://github.com/defunctzombie/zuul/issues/76
+    quitId= setTimeout (-> quitted()),1000
+    quitted= =>
+      return unless session.driver
+      delete session.driver
+
+      @boot @current
+
     driver
     .get 'about:blank'
     .sauceJobStatus pass
-    .catch()
-    .quit()
-    .nodeify =>
-      delete session.driver
-
-      @log.debug 'Shutting down %s@%s at %s',long_name, short_version, os, id
-
-      @boot @current
+    .quit quitted
 
   finish: ->
     @log.info '%s passed, %s failed. Total %s browsers.',@passed,@failed,@sessions.length
