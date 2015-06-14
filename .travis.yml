@@ -13,10 +13,10 @@ branches:
 language: node_js
 node_js:
   - '0.10'
+after_install:
+  - npm install coffee-script --global
 
 # Npm publish options
-before_deploy:
-  - npm install coffee-script --global
 deploy:
   provider: npm
   email: i59naga@icloud.com
