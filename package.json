@@ -5,7 +5,7 @@
   
   "scripts": {
     "posttest": "coffee --output node_modules/karma-saucelabs-launcher --bare --compile src",
-    "test": "npm run karma && echo pending || echo pending",
+    "test": "cd test && karma start && echo pending || echo pending",
 
     "prepublish": "node -e \"if(process.env.TRAVIS){}else{process.exit(1)}\" && npm run compile || echo skip prepublish",
     "compile": "coffee --bare --compile index.coffee",
