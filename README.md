@@ -127,6 +127,10 @@ $ karma start
 # INFO [webdriver]: 21 passed, 10 failed. Total 31 browsers.
 # INFO [webdriver]: Total 282.38 sec
 ```
+## Related projects
+* [soysauce](https://github.com/59naga/soysauce/)
+
+[![Sauce Test Status][sauce-image]][sauce]
 
 # Better cloud-test libraries
 * [zuul](https://github.com/defunctzombie/zuul)
@@ -138,6 +142,8 @@ License
 
 [License]: http://59naga.mit-license.org/
 
+[sauce-image]: http://soysauce.berabou.me/u/59798/karma-saucelabs-launcher.svg?branch=master
+[sauce]: https://saucelabs.com/u/59798
 [npm-image]:https://img.shields.io/npm/v/karma-saucelabs-launcher.svg?style=flat-square
 [npm]: https://npmjs.org/package/karma-saucelabs-launcher
 [travis-image]: http://img.shields.io/travis/59naga/karma-saucelabs-launcher.svg?style=flat-square
