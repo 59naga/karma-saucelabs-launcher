@@ -4,7 +4,7 @@ module.exports= function(config) {
     reporters: ['sauce'],
     singleRun: true,
     
-    logLevel: 'DEBUG',
+    logLevel: 'INFO',
 
     autoWatch: false,
     basePath: '',

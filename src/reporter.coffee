@@ -1,19 +1,27 @@
+# No Dependencies
+
+# Public
 class Reporter
   # Karma dependency injections
   constructor: (
     baseReporterDecorator
-    capturedBrowsers # lib/browser_collection.js
-
-    emitter
     logger
 
-    sessions # ./index
+    # lib/browser_collection.js
+    capturedBrowsers
+
+    # Share with the Launcher
+    emitter
+    sessions
   )->
     baseReporterDecorator this
+    
+    # Disable summary report (doesn't match the launch)
+    @TOTAL_SUCCESS = ''
+    @TOTAL_FAILED = ''
 
     log= logger.create 'reporter:sauce'
     @onBrowserStart= (browser)=>
-      log.debug 'sauce:onBrowserStart',JSON.stringify browser
       emitter.emit 'sauce:onBrowserStart',browser
 
       # Disable browser behaviors

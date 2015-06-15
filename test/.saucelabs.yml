@@ -5,12 +5,15 @@ description:
 browsers:
   - name: chrome
     version: oldest,dev,beta
+    platform: 'Windows 2012 R2'
   - name: ie
     version: [latest]
+    platform: 'Windows 2012'
   - name: firefox
     version: 25..latest
+    platform: 'Linux'
   - name: safari
-    version: 5..latest
+    version: [5..latest]
   - name: iphone
     version: [7.1,latest]
   - name: ipad

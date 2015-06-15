@@ -6,14 +6,15 @@ wd= require 'wd'
 path= require 'path'
 pkg= require process.cwd()+path.sep+'package'
 
-# Private (Without Karma DI)
+# Public
 class Webdriver
+  # Unused Karma DI
   constructor: (uri,@sessions=[],options={})->
     [@url,qs]= uri.split '?'
 
     @tunnelIdentifier= options.tunnelIdentifier
-    @username= options.username
-    @accessKey= options.accessKey
+    @username= options.username ? 'SAUCE_USERNAME'
+    @accessKey= options.accessKey ? 'SAUCE_ACCESS_KEY'
 
     # @sessions= @sessions[...4]
     @begin= Date.now()    
@@ -25,25 +26,24 @@ class Webdriver
     @passed= 0
     @failed= 0
 
-    @log=
-      if options.log
-        options.log
-
-      # Set the noop logger
-      else
-        debug: ->
-        info: ->
-        error: ->
+    @logger= options.logger
+    @log= @createLogger 'wd'
 
     @done= Promise.defer()
+
+  createLogger: (name)->
+    if @logger
+      @logger.create name
+    else
+      debug: ->
+      info: ->
+      error: ->
 
   queue: (browser)->
     {long_name,short_version,os}= browser
     @log.info 'Queuing %s@%s at %s',long_name,short_version,os
 
   boot: (id)=>
-    @log.debug 'Progress %s/%s Concurrency %s/%s (%s)',@current,@sessions.length,@active,@concurrency,(@current is @sessions.length and @active is 0)
-
     browser= @sessions[id]
     return @queue browser if @active >= @concurrency
     return @finish() if @current is @sessions.length and @active is 0
@@ -53,9 +53,10 @@ class Webdriver
     @active++
 
     {long_name,short_version,os}= browser
+
+    @log.debug 'Progress %s/%s Concurrency %s/%s Last %s',@current,@sessions.length,@active,@concurrency,(@current is @sessions.length and @active is 0)
     @log.info 'Start %s@%s at %s',long_name,short_version,os
 
-    uri= @url+'?id='+id # See karma/client/karma.js:13
     options= {}
     options.browserName= browser.api_name
     options.version= browser.short_version
@@ -72,17 +73,11 @@ class Webdriver
     options['build']?= process.env.BUILD_TAG
     options['build']?= process.env.CIRCLE_BUILD_NUM
 
-    driver= @launch uri,options
-    driver.heartbeat= setInterval =>
-      driver.title().then null,(error)=>
-        @log.error error if @log
-        @complete id
-    ,60000
-
     # Share to sessions of Reporter's DI
-    @sessions[id].driver= driver
+    @sessions[id].driver= @launch id,options
 
-  launch: (url,options)->
+  # wd remote factory
+  launch: (id,options)->
     args= [
       'ondemand.saucelabs.com'
       80
@@ -90,30 +85,66 @@ class Webdriver
       @accessKey
     ]
 
+    {browserName,version,platform}= options
+    log= @createLogger "#{browserName}@#{version}(#{platform})"
     driver= wd.promiseChainRemote args...
     driver.on 'status',(info)=>
-      @log.debug info
+      log.debug info
     driver.on 'command',(eventType,command,response)=>
-      @log.debug eventType,command,(response or '')
+      log.debug eventType,command,(response or '')
     driver.on 'http',(meth,path,data)=>
-      @log.debug meth,path,(data or '')
+      log.debug meth,path,(data or '')
 
+    uri= @url+'?id='+id # See karma/client/karma.js:13
     driver
     .init(options)
-    .get(url)
+    .get(uri)
+
+    # Private
+    heartbeatFail= 0
+    heartbeat= setInterval =>
+      log.debug 'Heartbeat(%s) in %s@%s at %s',heartbeatFail, browserName, version, platform
+
+      driver.title().then null,(error)=>
+        heartbeatFail++
+
+        @complete id if heartbeatFail >= 4
+        log.error 'Heartbeat(%s) %s',heartbeatFail, JSON.stringify error
+    ,20000
+
+    # Add public
+    driver.clearHeartbeat= =>
+      clearInterval heartbeat
+
+      log.debug 'Stop heartbeat in %s@%s at %s',browserName, version, platform
+
+    # https://github.com/defunctzombie/zuul/issues/76
+    driver.passed= (pass)=>
+      new Promise (resolve)=>
+        quitId= setTimeout (-> quitted()),2000
+        quitted= =>
+          return unless quitId
+          quitId= null
+
+          @active--
+          @boot @current
+
+          resolve()
+
+        driver
+        .sauceJobStatus pass
+        .get 'about:blank'
+        .quit quitted
 
     driver
 
   complete: (id)->
     session= @sessions[id]
 
-    return @log.error 'Can not complete invalid session' unless session?.driver
+    return @log.error 'Can not complete invalid session(%s)',id unless session?.driver
 
-    @active--
     {driver,lastResult,long_name,short_version,os}= session
-
-    @log.debug 'Stop heartbeat in %s@%s at %s',long_name, short_version, os, id
-    clearInterval driver.heartbeat
+    driver.clearHeartbeat() if driver.clearHeartbeat
 
     lastResult?= {crash:true}
     pass= not (lastResult.crash or lastResult.failed or lastResult.error)
@@ -127,28 +158,14 @@ class Webdriver
 
     @log.debug 'Shutting down %s@%s at %s',long_name, short_version, os, id
 
-    # https://github.com/defunctzombie/zuul/issues/76
-    quitId= setTimeout (-> quitted()),1000
-    quitted= =>
-      return unless session.driver
-      delete session.driver
-
-      @boot @current
-
-    driver
-    .get 'about:blank'
-    .sauceJobStatus pass
-    .quit quitted
+    driver.passed pass
+    delete session.driver
 
   finish: ->
-    @log.info '%s passed, %s failed. Total %s browsers.',@passed,@failed,@sessions.length
-    @log.info 'Total %s sec',(Date.now()-@begin)/1000
+    code= if @passed is @sessions.length then 0 else 1
 
-    if @passed is @sessions.length
-      @log.debug "Exit code is 0"
-      @done.resolve 0
-    else
-      @log.debug "Exit code is 1"
-      @done.resolve 1
+    @log.debug 'Exit code is %d',code
+    
+    @done.resolve [code,@passed,@failed,@sessions.length,Date.now()-@begin]
 
 module.exports= Webdriver
