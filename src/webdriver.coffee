@@ -108,9 +108,9 @@ class Webdriver
       driver.title().then null,(error)=>
         heartbeatFail++
 
-        @complete id if heartbeatFail >= 4
+        @complete id if heartbeatFail >= 2
         log.error 'Heartbeat(%s) %s',heartbeatFail, JSON.stringify error
-    ,20000
+    ,60000
 
     # Add public
     driver.clearHeartbeat= =>
