@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+var argv= process.argv.slice(2)
+argv= argv.concat('--browsers Sauce --reporters sauce --single-run'.split(' '))
+argv.unshift('start')
+
+console.log('$ karma '+argv.join(' '))
+
+require('child_process').spawn('karma',argv,{stdio:'inherit'})
