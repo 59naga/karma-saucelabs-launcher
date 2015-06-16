@@ -1,6 +1,8 @@
 {
   "name": "karma-saucelabs-launcher",
-  "bin": "karma-sauce",
+  "bin": {
+    "karma-sauce": "karma-saucelabs-launcher"
+  },
   "version": "0.0.0-beta.1",
   "description": "Launch any browser on SauceLabs at concurrency",
   
