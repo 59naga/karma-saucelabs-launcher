@@ -50,57 +50,47 @@ export SAUCE_ACCESS_KEY=********-****-****-****-************
 Start the karma.
 
 ```bash
-$ karma-sauce
-# $ karma start --browsers Sauce --reporters sauce --single-run
-# INFO [karma]: Karma v0.12.36 server started at http://localhost:9876/
+$ karma-sauce --log-level INFO
+# $ karma start --log-level INFO --browsers Sauce --reporters sauce --single-runINFO [karma]: Karma v0.12.36 server started at http://localhost:9876/
 # INFO [launcher]: Starting browser SauceLauncher
-# INFO [wd]: Start Google Chrome@26 at Windows 2012 R2
-# INFO [wd]: Start Google Chrome@dev at Windows 2012 R2
-# INFO [wd]: Start Google Chrome@beta at Windows 2012 R2
-# INFO [wd]: Queuing Internet Explorer@11 at Windows 2012 R2
-# INFO [wd]: Queuing Firefox@25 at Linux
-# INFO [wd]: Queuing Firefox@26 at Linux
-# INFO [wd]: Queuing Firefox@27 at Linux
-# INFO [wd]: Queuing Firefox@28 at Linux
-# INFO [wd]: Queuing Firefox@29 at Linux
-# INFO [wd]: Queuing Firefox@30 at Linux
-# INFO [wd]: Queuing Firefox@31 at Linux
-# INFO [wd]: Queuing Firefox@32 at Linux
-# INFO [wd]: Queuing Firefox@33 at Linux
-# INFO [wd]: Queuing Firefox@34 at Linux
-# INFO [wd]: Queuing Firefox@35 at Linux
-# INFO [wd]: Queuing Firefox@36 at Linux
-# INFO [wd]: Queuing Firefox@37 at Linux
-# INFO [wd]: Queuing Firefox@38 at Linux
-# INFO [wd]: Queuing Safari@5 at Mac 10.6
-# INFO [wd]: Queuing Safari@6 at Mac 10.8
-# INFO [wd]: Queuing Safari@7 at Mac 10.9
-# INFO [wd]: Queuing Safari@8 at Mac 10.10
-# INFO [wd]: Queuing iPhone@7.1 at Mac 10.9
-# INFO [wd]: Queuing iPhone@8.2 at Mac 10.10
-# INFO [wd]: Queuing iPad@4.3 at Mac 10.6
-# INFO [wd]: Queuing Android@4.0 at Linux
-# INFO [wd]: Queuing Android@4.1 at Linux
-# INFO [wd]: Queuing Android@4.2 at Linux
-# INFO [wd]: Queuing Android@4.3 at Linux
-# INFO [wd]: Queuing Android@4.4 at Linux
-# INFO [wd]: Queuing Android@5.0 at Linux
-# INFO [wd]: Queuing Android@5.1 at Linux
-# INFO [Chrome 26.0.1410 (Windows 8 0.0.0)]: Connected on socket cvxtGM1CwUEe3q2V_jpu with id 0
-# INFO [wd]: Passed Google Chrome@26 at Windows 2012 R2 (passed 1/ total 1)
-# INFO [wd]: Progress 4/32 Concurrency 3/3 Last false
-# INFO [wd]: Start Internet Explorer@11 at Windows 2012 R2
-# INFO [Chrome 45.0.2427 (Windows 8.1 0.0.0)]: Connected on socket ScCYxlLQ1MJqrqaV_jpv with id 1
-# INFO [Chrome 44.0.2403 (Windows 8.1 0.0.0)]: Connected on socket pCl6OauaaArJN0xC_jpw with id 2
-# INFO [wd]: Passed Google Chrome@dev at Windows 2012 R2 (passed 1/ total 1)
-# INFO [wd]: Passed Google Chrome@beta at Windows 2012 R2 (passed 1/ total 1)
-# INFO [wd]: Progress 5/32 Concurrency 3/3 Last false
-# INFO [wd]: Start Firefox@25 at Linux
+# INFO [launcher:sauce]: Found 33 wds in https://saucelabs.com/rest/v1/info/browsers/webdriver
+# INFO [wd]: Start chrome@43 at Mac 10.6
+# INFO [wd]: Start internet explorer@8 at Windows 2003
+# INFO [wd]: Start internet explorer@9 at Windows 2008
+# INFO [wd]: Queuing internet explorer@10 at Windows 2012
+# INFO [wd]: Queuing internet explorer@11 at Windows 2012 R2
+# INFO [wd]: Queuing firefox@25 at Linux
+# INFO [wd]: Queuing firefox@26 at Linux
+# INFO [wd]: Queuing firefox@27 at Linux
+# INFO [wd]: Queuing firefox@28 at Linux
+# INFO [wd]: Queuing firefox@29 at Linux
+# INFO [wd]: Queuing firefox@30 at Linux
+# INFO [wd]: Queuing firefox@31 at Linux
+# INFO [wd]: Queuing firefox@32 at Linux
+# INFO [wd]: Queuing firefox@33 at Linux
+# INFO [wd]: Queuing firefox@34 at Linux
+# INFO [wd]: Queuing firefox@35 at Linux
+# INFO [wd]: Queuing firefox@36 at Linux
+# INFO [wd]: Queuing firefox@37 at Linux
+# INFO [wd]: Queuing firefox@38 at Linux
+# INFO [wd]: Queuing safari@5 at Mac 10.6
+# INFO [wd]: Queuing safari@6 at Mac 10.8
+# INFO [wd]: Queuing safari@7 at Mac 10.9
+# INFO [wd]: Queuing safari@8 at Mac 10.10
+# INFO [wd]: Queuing iphone@7.1 at Mac 10.9
+# INFO [wd]: Queuing iphone@8.2 at Mac 10.10
+# INFO [wd]: Queuing ipad@4.3 at Mac 10.6
+# INFO [wd]: Queuing android@4.0 at Linux
+# INFO [wd]: Queuing android@4.1 at Linux
+# INFO [wd]: Queuing android@4.2 at Linux
+# INFO [wd]: Queuing android@4.3 at Linux
+# INFO [wd]: Queuing android@4.4 at Linux
+# INFO [wd]: Queuing android@5.0 at Linux
+# INFO [wd]: Queuing android@5.1 at Linux
 #
 # ...
 #
-# INFO [wd]: 30 passed, 2 failed. Total 32 browsers.
-# INFO [wd]: Total 383.292 sec
+# INFO [wd]: 31 passed, 2 failed. Total 33 browsers(438.264 sec).
 ```
 
 ## Related projects
