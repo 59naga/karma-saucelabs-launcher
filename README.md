@@ -33,36 +33,6 @@ browsers:
     version: ..latest
 ```
 
-Change or Create the `./karma.conf.js`
-
-```js
-module.exports= function(config) {
-  config.set({
-    browsers: ['Sauce'],
-    reporters: ['sauce'],
-    autoWatch: false,
-    // Doesn't work if change the above.
-
-    logLevel: 'INFO',
-
-    singleRun: true,
-    basePath: '',
-    frameworks: ['mocha'],
-    files: [
-      "test/**/*.js"
-    ],
-    exclude: [
-    ],
-    preprocessors: {
-    },
-    browserify: {
-    },
-    port: 9876,
-    colors: true,
-  })
-}
-```
-
 Create a `./test/index.js`
 
 ```js
@@ -83,7 +53,8 @@ export SAUCE_ACCESS_KEY=********-****-****-****-************
 Start the karma.
 
 ```bash
-$ karma start
+$ karma-sauce
+# $ karma start --browsers Sauce --reporters sauce --single-run
 # INFO [karma]: Karma v0.12.36 server started at http://localhost:9876/
 # INFO [launcher]: Starting browser SauceLauncher
 # INFO [wd]: Start Google Chrome@26 at Windows 2012 R2

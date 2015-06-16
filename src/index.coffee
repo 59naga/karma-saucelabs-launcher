@@ -57,46 +57,47 @@ class Launcher
 
     sauceConnectLauncher= null
     webdriver= null
-    @on 'start',(uri)=>
-      new Promise (resolve,reject)->
-        options= connectOptions
-        options.logger= log.debug.bind log
-
-        sauceConnect options,(error,connect)=>
-          return reject error if error?
-          sauceConnectLauncher= connect
-
-          resolve null
-
+    @on 'start',(uri)->
       # Add Webdriver sessions (and share to Reporter via DI)
+      new Promise (resolve,reject)->
+        log.debug 'Parse .saucelabs.yml'
+
+        saucelabs= new SauceLabs
+        saucelabs.getWebDriverBrowsers (error,browsers)->
+          return reject error if error?
+          finder.load browsers
+          finder.yaml= YAML.load process.cwd()+path.sep+'.saucelabs.yml'
+
+          for type in finder.yaml.browsers
+            {name,version,platform}= type
+
+            for version,browser of finder.find name,version,platform
+              # Doesn't work socket.io
+              if version is 'internet explorer@6'
+                log.warn 'internet explorer@6 is unsupported'
+                continue
+
+              log.debug JSON.stringify browser
+              sessions.push browser
+
+          url= 'https://saucelabs.com/rest/v1/info/browsers/webdriver'
+          log.info 'Found %s wds in %s',sessions.length,url
+
+          resolve()
+
       .then ->
         new Promise (resolve,reject)->
-          log.debug 'Parse .saucelabs.yml'
+          options= connectOptions
+          options.logger= log.debug.bind log
 
-          saucelabs= new SauceLabs
-          saucelabs.getWebDriverBrowsers (error,browsers)->
+          sauceConnect options,(error,connect)->
             return reject error if error?
-            finder.load browsers
-            finder.yaml= YAML.load process.cwd()+path.sep+'.saucelabs.yml'
+            sauceConnectLauncher= connect
 
-            for type in finder.yaml.browsers
-              {name,version,platform}= type
-
-              for version,browser of finder.find name,version,platform
-                # Doesn't work socket.io
-                if version is 'internet explorer@6'
-                  log.warn 'internet explorer@6 is unsupported'
-                  continue
-
-                log.debug JSON.stringify browser
-                sessions.push browser
-
-            log.debug 'Found %s browsers in %s',sessions.length,'https://saucelabs.com/rest/v1/info/browsers/webdriver'
-
-            resolve()
+            resolve null
 
       # Concurrency sessions
-      .then =>
+      .then ->
         return Promise.resolve 1 if sessions.length is 0
 
         webdriver= new Webdriver uri,sessions,
@@ -113,24 +114,14 @@ class Launcher
 
         webdriver.done.promise
 
-      .spread (code,passed,failed,count,msec)=>
-        log.info '%d passed, %d failed. Total %d browsers.',passed,failed,count
-        log.info 'Total %s sec',msec/1000
+      .spread (exitCode,passed,failed,count,msec)->
+        log.info '%d passed, %d failed. Total %d browsers(%s sec).',
+          passed, failed,
+          count, msec/1000
 
-        if code is 0
-          this._done()
-        else
-          this._done('failure')
+        emitter.emit 'run_complete',[],{exitCode}
 
-        emitter.emitAsync 'exit'
-        .then ->
-          # If the karma/lib/server.js isn't quit
-          process.exit code
-
-    # Receive "emitter.emitAsync('exit')" Don't use the ".emit"
-    emitter.once 'exit',(done)=>
-      log.debug 'Stop SauceLauncher...'
-
+    @once 'kill',(done)->
       queues= []
 
       if sauceConnectLauncher
@@ -145,10 +136,7 @@ class Launcher
           queues.push session.driver.passed false
 
       Promise.all queues
-      .finally =>
-        log.debug 'Stopped SauceLauncher'
-
-        # Notify to emitAsync of karma/lib/events.js
+      .finally ->
         done()
 
 # Publish DI

@@ -21,7 +21,7 @@ class Reporter
     @TOTAL_FAILED = ''
 
     log= logger.create 'reporter:sauce'
-    @onBrowserStart= (browser)=>
+    @onBrowserStart= (browser)->
       emitter.emit 'sauce:onBrowserStart',browser
 
       # Disable browser behaviors
@@ -30,7 +30,7 @@ class Reporter
       browser.onDisconnect= ->
 
     # Share to sessions of SauceLauncher's DI
-    @onBrowserComplete= (browser)=>
+    @onBrowserComplete= (browser)->
       log.debug 'sauce:onBrowserComplete',JSON.stringify browser
 
       sessions[browser.id].lastResult= browser.lastResult
@@ -38,7 +38,7 @@ class Reporter
       emitter.emit 'sauce:onBrowserComplete',browser.id
       capturedBrowsers.remove browser
 
-    @onBrowserError= (browser,error)=>
+    @onBrowserError= (browser,error)->
       log.debug 'sauce:onBrowserError',JSON.stringify browser
 
       sessions[browser.id].lastResult= browser.lastResult

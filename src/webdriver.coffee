@@ -3,8 +3,11 @@ Promise= require 'bluebird'
 
 wd= require 'wd'
 
-path= require 'path'
-pkg= require process.cwd()+path.sep+'package'
+try
+  path= require 'path'
+  pkg= require process.cwd()+path.sep+'package'
+catch
+  pkg= {name:'Karma test'}
 
 # Public
 class Webdriver
@@ -17,7 +20,7 @@ class Webdriver
     @accessKey= options.accessKey ? 'SAUCE_ACCESS_KEY'
 
     # @sessions= @sessions[...4]
-    @begin= Date.now()    
+    @begin= Date.now()
     @current= 0
 
     @concurrency= options.concurrency ? 3
@@ -40,8 +43,8 @@ class Webdriver
       error: ->
 
   queue: (browser)->
-    {long_name,short_version,os}= browser
-    @log.info 'Queuing %s@%s at %s',long_name,short_version,os
+    {api_name,short_version,os}= browser
+    @log.info 'Queuing %s@%s at %s',api_name,short_version,os
 
   boot: (id)=>
     browser= @sessions[id]
@@ -52,10 +55,13 @@ class Webdriver
     @current++
     @active++
 
-    {long_name,short_version,os}= browser
+    {api_name,short_version,os}= browser
 
-    @log.debug 'Progress %s/%s Concurrency %s/%s Last %s',@current,@sessions.length,@active,@concurrency,(@current is @sessions.length and @active is 0)
-    @log.info 'Start %s@%s at %s',long_name,short_version,os
+    @log.debug 'Progress %s/%s Concurrency %s/%s Last %s',
+      @current, @sessions.length,
+      @active, @concurrency,
+      (@current is @sessions.length and @active is 0)
+    @log.info 'Start %s@%s at %s',api_name,short_version,os
 
     options= {}
     options.browserName= browser.api_name
@@ -86,19 +92,19 @@ class Webdriver
     ]
 
     {browserName,version,platform}= options
-    log= @createLogger "#{browserName}@#{version}(#{platform})"
+    log= @createLogger "wd:#{browserName}@#{version}(#{platform})"
     driver= wd.promiseChainRemote args...
-    driver.on 'status',(info)=>
+    driver.on 'status',(info)->
       log.debug info
-    driver.on 'command',(eventType,command,response)=>
+    driver.on 'command',(eventType,command,response)->
       log.debug eventType,command,(response or '')
-    driver.on 'http',(meth,path,data)=>
+    driver.on 'http',(meth,path,data)->
       log.debug meth,path,(data or '')
 
     uri= @url+'?id='+id # See karma/client/karma.js:13
     driver
-    .init(options)
-    .get(uri)
+    .init options
+    .get uri
 
     # Private
     heartbeatFail= 0
@@ -113,7 +119,7 @@ class Webdriver
     ,60000
 
     # Add public
-    driver.clearHeartbeat= =>
+    driver.clearHeartbeat= ->
       clearInterval heartbeat
 
       log.debug 'Stop heartbeat in %s@%s at %s',browserName, version, platform
@@ -143,7 +149,7 @@ class Webdriver
 
     return @log.error 'Can not complete invalid session(%s)',id unless session?.driver
 
-    {driver,lastResult,long_name,short_version,os}= session
+    {driver,lastResult,api_name,short_version,os}= session
     driver.clearHeartbeat() if driver.clearHeartbeat
 
     lastResult?= {crash:true}
@@ -151,12 +157,18 @@ class Webdriver
 
     if pass
       @passed++
-      @log.info 'Passed %s@%s at %s (passed %s/ total %s)', long_name, short_version, os, lastResult.success, lastResult.total
+      @log.info 'Passed %s@%s at %s (passed %s/ total %s)',
+        api_name, short_version,
+        os, lastResult.success,
+        lastResult.total
     else
       @failed++
-      @log.error 'Failed %s@%s at %s (passed %s/ failed %s/ total %s)', long_name, short_version, os, lastResult.success|0, lastResult.failed|0, lastResult.total|0
+      @log.error 'Failed %s@%s at %s (passed %s/ failed %s/ total %s)',
+        api_name, short_version,
+        os, lastResult.success|0, lastResult.failed|0,
+        lastResult.total|0
 
-    @log.debug 'Shutting down %s@%s at %s',long_name, short_version, os, id
+    @log.debug 'Shutting down %s@%s at %s',api_name, short_version, os
 
     driver.passed pass
     delete session.driver

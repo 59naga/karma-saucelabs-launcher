@@ -1,11 +1,12 @@
 {
   "name": "karma-saucelabs-launcher",
+  "bin": "karma-sauce",
   "version": "0.0.0-beta.1",
   "description": "Launch any browser on SauceLabs at concurrency",
   
   "scripts": {
     "pretest": "coffee --output node_modules/karma-saucelabs-launcher --bare --compile src",
-    "test": "cd test && karma start && echo exit 0 || echo exit 1",
+    "test": "jasminetea --file index.coffee --timeout 120000 --lint",
 
     "prepublish": "node -e \"if(process.env.TRAVIS){}else{process.exit(1)}\" && npm run compile || echo skip prepublish",
     "compile": "coffee --bare --compile index.coffee",
@@ -14,6 +15,7 @@
 
   "dependencies": {
     "bluebird": "^2.9.27",
+    "minimist": "^1.1.1",
     "sauce-connect-launcher": "^0.11.1",
     "saucelabs": "^0.1.1",
     "saucelabs-finder": "0.0.0-alpha",
