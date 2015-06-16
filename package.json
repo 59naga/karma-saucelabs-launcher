@@ -1,12 +1,12 @@
 {
   "name": "karma-saucelabs-launcher",
-  "version": "0.0.0-beta.2",
+  "version": "0.0.0-beta.3",
   "description": "Launch any browser on SauceLabs at concurrency",
   
   "bin": {
     "karma-sauce": "karma-sauce"
   },
-  
+
   "scripts": {
     "pretest": "coffee --output node_modules/karma-saucelabs-launcher --bare --compile src",
     "test": "jasminetea --file index.coffee --timeout 120000 --lint",

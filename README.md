@@ -4,8 +4,7 @@
 
 ## Installation
 ```bash
-$ npm install karma karma-mocha mocha --save
-$ npm install karma-saucelabs-launcher --save
+$ npm install karma-saucelabs-launcher --global
 ```
 
 # Usage
@@ -15,25 +14,23 @@ Create `./.saucelabs.yml` like a below:
 ```yaml
 browsers:
   - name: chrome
-    version: oldest,dev,beta
-    #platform: 'Windows 2012 R2'
+    version: latest
   - name: ie
-    version: [latest]
-    #platform: 'Windows 2012'
+    version: '8,9,10,11'
   - name: firefox
     version: 25..latest
-    #platform: 'Linux'
+    platform: 'Linux'
   - name: safari
-    version: [5..latest]
+    version: 5..latest
   - name: iphone
-    version: [7.1,latest]
+    version: '7.1,latest'
   - name: ipad
     version: oldest
   - name: android
     version: ..latest
 ```
 
-Create a `./test/index.js`
+Create a `./test/index.js` (Case: `karma-mocha`)
 
 ```js
 describe('this',function(){
@@ -112,8 +109,8 @@ $ karma-sauce
 [![Sauce Test Status][sauce-image]][sauce]
 
 # Better cloud-test libraries
-* [zuul](https://github.com/defunctzombie/zuul)
 * [karma-sauce-launcher](https://github.com/karma-runner/karma-sauce-launcher)
+* [zuul](https://github.com/defunctzombie/zuul)
 
 License
 ---
