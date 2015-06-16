@@ -4,7 +4,7 @@ module.exports= function(config) {
 
     autoWatch: false,
     basePath: '',
-    frameworks: ['mocha'],
+    frameworks: ['mocha','chai'],
     files: [
       '*.js'
     ],

@@ -19,7 +19,6 @@ class Webdriver
     @username= options.username ? 'SAUCE_USERNAME'
     @accessKey= options.accessKey ? 'SAUCE_ACCESS_KEY'
 
-    # @sessions= @sessions[...4]
     @begin= Date.now()
     @current= 0
 
@@ -40,6 +39,7 @@ class Webdriver
     else
       debug: ->
       info: ->
+      warn: ->
       error: ->
 
   queue: (browser)->
@@ -115,7 +115,7 @@ class Webdriver
         heartbeatFail++
 
         @complete id if heartbeatFail >= 2
-        log.error 'Heartbeat(%s) %s',heartbeatFail, JSON.stringify error
+        log.warn 'Heartbeat(%s) %s',heartbeatFail, JSON.stringify error
     ,60000
 
     # Add public
@@ -147,7 +147,7 @@ class Webdriver
   complete: (id)->
     session= @sessions[id]
 
-    return @log.error 'Can not complete invalid session(%s)',id unless session?.driver
+    return @log.warn 'Can not complete invalid session(%s)',id unless session?.driver
 
     {driver,lastResult,api_name,short_version,os}= session
     driver.clearHeartbeat() if driver.clearHeartbeat

@@ -5,4 +5,8 @@ argv.unshift('start')
 
 console.log('$ karma '+argv.join(' '))
 
-require('child_process').spawn('karma',argv,{stdio:'inherit'})
+require('child_process')
+.spawn('karma',argv,{stdio:'inherit'})
+.on('exit',function(code){
+  process.exit(code)
+})

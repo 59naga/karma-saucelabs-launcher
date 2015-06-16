@@ -31,17 +31,18 @@ class Reporter
 
     # Share to sessions of SauceLauncher's DI
     @onBrowserComplete= (browser)->
-      log.debug 'sauce:onBrowserComplete',JSON.stringify browser
-
-      sessions[browser.id].lastResult= browser.lastResult
+      session= sessions[browser.id]
+      session.lastResult= browser.lastResult
 
       emitter.emit 'sauce:onBrowserComplete',browser.id
       capturedBrowsers.remove browser
 
     @onBrowserError= (browser,error)->
-      log.debug 'sauce:onBrowserError',JSON.stringify browser
+      session= sessions[browser.id]
+      session.lastResult= browser.lastResult
 
-      sessions[browser.id].lastResult= browser.lastResult
+      {api_name,short_version,os}= session
+      log.error '%s@%s: %s',api_name,short_version,JSON.stringify error
 
       emitter.emit 'sauce:onBrowserError',browser.id
       capturedBrowsers.remove browser

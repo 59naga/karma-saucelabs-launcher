@@ -1,6 +1,6 @@
 {
   "name": "karma-saucelabs-launcher",
-  "version": "0.0.0-beta.3",
+  "version": "0.0.0-beta.4",
   "description": "Launch any browser on SauceLabs at concurrency",
   
   "bin": {
@@ -28,6 +28,7 @@
   "devDependencies": {
     "jasminetea": "^0.2.1-alpha.2",
     "karma": "^0.12.36",
+    "karma-chai": "^0.1.0",
     "karma-mocha": "^0.1.10",
     "mocha": "^2.2.5"
   },
