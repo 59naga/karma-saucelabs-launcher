@@ -1,11 +1,11 @@
-# No Dependencies
+# Dependencies
+requrest= require 'request'
 
 # Public
 class Reporter
   # Karma dependency injections
   constructor: (
     baseReporterDecorator
-    logger
 
     # lib/browser_collection.js
     capturedBrowsers
@@ -20,7 +20,6 @@ class Reporter
     @TOTAL_SUCCESS = ''
     @TOTAL_FAILED = ''
 
-    log= logger.create 'reporter:sauce'
     @onBrowserStart= (browser)->
       emitter.emit 'sauce:onBrowserStart',browser
 
@@ -28,6 +27,7 @@ class Reporter
       # Fixed "this._browsers.push is undefined"
       browser.reconnect= ->
       browser.onDisconnect= ->
+      capturedBrowsers.remove browser
 
     # Share to sessions of SauceLauncher's DI
     @onBrowserComplete= (browser)->
@@ -35,16 +35,45 @@ class Reporter
       session.lastResult= browser.lastResult
 
       emitter.emit 'sauce:onBrowserComplete',browser.id
-      capturedBrowsers.remove browser
+
+    @specFailure= (browser,result)->
+      session= sessions[browser.id]
+      # session.lastResult= browser.lastResult
+      
+      log= session.driver.log
+      log.error '\nFailure: %s %s\n%s',
+        result.suite.join(' '),result.description,
+        result.log
 
     @onBrowserError= (browser,error)->
       session= sessions[browser.id]
       session.lastResult= browser.lastResult
 
-      {api_name,short_version,os}= session
-      log.error '%s@%s: %s',api_name,short_version,JSON.stringify error
+      log= session.driver.log
 
-      emitter.emit 'sauce:onBrowserError',browser.id
-      capturedBrowsers.remove browser
+      url= error.match(/http:.+/)?[0] ? ''
+      [schemas...,line]= url.split ':'
+      uri= schemas.join ':'
+      unless line>=0
+        log.error '\n%s',error
+        emitter.emit 'sauce:onBrowserError',browser.id
+        return
+
+      # Extra log report
+
+      url= error.match(/http:.+/)?[0] ? ''
+      [schemas...,line]= url.split ':'
+      uri= schemas.join ':'
+
+      requrest uri,(ignoredError,response)->
+        codeChunk= response?.body?.split('\n')[line-1]
+
+        if codeChunk
+          log.error '\n%s\n%s: %s',error,
+            line, codeChunk
+        else
+          log.error '\n%s',error
+
+        emitter.emit 'sauce:onBrowserError',browser.id
 
 module.exports= Reporter

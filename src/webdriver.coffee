@@ -119,6 +119,7 @@ class Webdriver
     ,60000
 
     # Add public
+    driver.log= log
     driver.clearHeartbeat= ->
       clearInterval heartbeat
 
