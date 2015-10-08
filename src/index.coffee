@@ -10,18 +10,6 @@ YAML= require 'yamljs'
 path= require 'path'
 finder= require 'saucelabs-finder'
 
-# Disable "WARN [web-server]: 404: /favicon.ico"
-# https://github.com/karma-runner/karma/pull/1453
-try
-  common= (require 'karma/lib/middleware/common')
-  serve404= common.serve404
-common.serve404= (response,path)->
-  if path is '/favicon.ico'
-    response.writeHead 404
-    return response.end 'NOT FOUND'
-
-  serve404 arguments...
-
 # Environment
 connectOptions=
   username: process.env.SAUCE_USERNAME ? 'SAUCE_USERNAME'
