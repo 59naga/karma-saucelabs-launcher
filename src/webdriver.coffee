@@ -22,7 +22,7 @@ class Webdriver
     @begin= Date.now()
     @current= 0
 
-    @concurrency= options.concurrency ? 3
+    @concurrency= options.concurrency ? 5
     @active= 0
 
     @passed= 0

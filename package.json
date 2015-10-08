@@ -1,6 +1,6 @@
 {
   "name": "karma-saucelabs-launcher",
-  "version": "0.0.0-beta.5",
+  "version": "0.0.0",
   "description": "Launch any browser on SauceLabs at concurrency",
   
   "bin": {
@@ -17,23 +17,25 @@
   },
 
   "dependencies": {
-    "bluebird": "^2.9.27",
-    "minimist": "^1.1.1",
-    "request": "^2.58.0",
+    "bluebird": "^2.10.2",
+    "minimist": "^1.2.0",
+    "request": "^2.64.0",
     "sauce-connect-launcher": "^0.11.1",
     "saucelabs": "^0.1.1",
     "saucelabs-finder": "0.0.0-alpha",
+    "throat": "^2.0.2",
     "wd": "^0.3.12",
-    "yamljs": "^0.2.3"
+    "yamljs": "^0.2.4"
   },
   "devDependencies": {
-    "jasminetea": "^0.2.1-alpha.2",
-    "karma": "^0.12.36",
+    "chai": "^3.3.0",
+    "jasminetea": "^0.2.1",
+    "karma": "^0.12.37",
     "karma-chai": "^0.1.0",
     "karma-mocha": "^0.1.10",
-    "mocha": "^2.2.5"
+    "mocha": "^2.3.3"
   },
-
+  
   "keywords": [
     "karma",
     "saucelabs",
